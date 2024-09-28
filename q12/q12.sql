@@ -101,3 +101,11 @@
 -- Bob attended the Math exam 1 time, the Programming exam 1 time, and did not attend the Physics exam.
 -- Alex did not attend any exams.
 -- John attended the Math exam 1 time, the Physics exam 1 time, and the Programming exam 1 time.
+
+-- draft solution
+SELECT *
+FROM Examinations a
+JOIN Students b
+ON a.student_id = b.student_id
+JOIN Subjects c
+ON a.subject_name = c.subject_name
