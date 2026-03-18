@@ -103,9 +103,39 @@
 -- John attended the Math exam 1 time, the Physics exam 1 time, and the Programming exam 1 time.
 
 -- draft solution
-SELECT *
-FROM Examinations a
-JOIN Students b
+WITH exam_count as
+    SELECT COUNT(1) as attended_exams,
+    student_id,
+    subject_name
+    FROM Examinations
+    GROUP BY student_id, subject_name
+SELECT b.student_id,
+b.student_name,
+a.subject_name,
+a.attended_exams
+FROM exam_count a
+INNER JOIN Students b
 ON a.student_id = b.student_id
-JOIN Subjects c
+INNER JOIN Subjects c
 ON a.subject_name = c.subject_name
+
+--correct solution
+SELECT
+    a.student_id
+    ,a.student_name
+    ,b.subject_name
+    ,COUNT(c.student_id) attended_exams
+FROM Students a
+CROSS JOIN Subjects b
+LEFT JOIN Examinations c
+    ON a.student_id = c.student_id
+    AND b.subject_name = c.subject_name
+
+GROUP BY a.student_id, a.student_name, b.subject_name
+ORDER BY a.student_id, a.student_name, b.subject_name
+;
+
+--notes:
+-- this problem requires the cross join (even with llm consultation)
+-- problem has the keywords "all combinations"
+-- cross join is a cartesian product, which is basically a multiplication of all possible combinations between two tables

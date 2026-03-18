@@ -1,0 +1,1 @@
+This is a practice set for SQL coding, basically to learn and relearn basic SQL
