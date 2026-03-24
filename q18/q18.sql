@@ -72,3 +72,34 @@
 -- All the users registered in contests 208, 209, and 210. The percentage is 100% and we sort them in the answer table by contest_id in ascending order.
 -- Alice and Alex registered in contest 215 and the percentage is ((2/3) * 100) = 66.67%
 -- Bob registered in contest 207 and the percentage is ((1/3) * 100) = 33.33%
+
+--draft solution
+SELECT
+    a.contest_id,
+    ROUND(
+        ((COUNT(a.user_id)*100/COUNT(b.user_id))), 2
+    ) as percentage
+FROM
+Register a
+LEFT JOIN 
+Users b
+ON
+a.user_id = b.user_id
+GROUP BY contest_id
+ORDER BY percentage DESC a.contest_id ASC
+
+-- optimized solution
+SELECT 
+    a.contest_id,
+    ROUND(
+        (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM Users)), 
+        2
+    ) AS percentage
+FROM Register a
+GROUP BY a.contest_id
+ORDER BY percentage DESC, a.contest_id ASC;
+
+-- notes:
+-- in this case using a subquery for the user count is much more optimized rather than joining
+-- reason being a subquery has a simpler execution plan compared to joins
+-- also it is a lot more maintainable in terms of syntax (easier to read)
