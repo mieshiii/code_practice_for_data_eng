@@ -50,3 +50,11 @@
 --   - They teach subject 2 in department 1.
 --   - They teach subject 3 in department 1.
 --   - They teach subject 4 in department 1.
+
+--draft solution
+SELECT
+    teacher_id
+    , COUNT(DISTINCT subject_id) as cnt
+FROM
+Teacher
+GROUP BY teacher_id
