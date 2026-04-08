@@ -63,3 +63,27 @@
 -- | null |
 -- +------+
 -- Explanation: There are no single numbers in the input table so we return null.
+
+-- draft solution
+SELECT
+    CASE
+        WHEN COUNT(*) > 1
+        THEN MAX(num)
+        ELSE NULL
+    END
+FROM
+MyNumbers
+GROUP BY num
+HAVING COUNT(num) = 1
+
+-- corrected solution
+SELECT MAX(num) as num
+FROM (
+    SELECT num
+    FROM MyNumbers
+    GROUP BY num
+    HAVING COUNT(num) = 1
+)
+
+-- notes:
+-- for these type of problems try to use subqueries, logic of using group by and having was correct
