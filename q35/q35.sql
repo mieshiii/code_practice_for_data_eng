@@ -58,3 +58,12 @@ Explanation: The folowing table is ordered by the turn for simplicity.
 +------+----+-----------+--------+--------------+
 
 -- draft solution
+SELECT
+    turn, 
+    person_name,
+    Weight,
+    LEAD() OVER Weight ORDER BY Turn AS next_turn
+FROM
+Queue
+ORDER BY Turn
+
