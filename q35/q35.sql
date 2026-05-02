@@ -57,13 +57,54 @@ Explanation: The folowing table is ordered by the turn for simplicity.
 | 6    | 1  | Winston   | 500    | ___          |
 +------+----+-----------+--------+--------------+
 
--- draft solution
+-- draft solution:
+WITH turn_running_sum AS
 SELECT
     turn, 
     person_name,
     Weight,
-    LEAD() OVER Weight ORDER BY Turn AS next_turn
+    LEAD() OVER Weight ORDER BY Turn AS next_weight_order_by_turn,
+    SUM(weight, next_weight_order_by_turn) AS total_weight
 FROM
 Queue
-ORDER BY Turn
+ORDER BY Turn ASC
 
+SELECT TOP 1
+    person_name
+FROM 
+turn_running_sum
+WHERE 
+total_weight < 1000
+ORDER BY total_weight DESC
+
+-- correct solution:
+WITH cumulative_weight AS (
+    SELECT 
+        person_name,
+        weight,
+        turn,
+        SUM(weight) OVER (ORDER BY turn ROWS UNBOUNDED PRECEDING) AS total_weight
+    FROM Queue
+)
+SELECT person_name
+FROM cumulative_weight
+WHERE total_weight <= 1000
+ORDER BY total_weight DESC
+LIMIT 1;
+
+
+
+-- optimized solution:
+SELECT person_name
+FROM (
+    SELECT 
+        person_name,
+        SUM(weight) OVER (ORDER BY turn) AS total_weight
+    FROM Queue
+) ranked
+WHERE total_weight <= 1000
+ORDER BY total_weight DESC
+LIMIT 1;
+
+-- notes:
+-- the idea was correct, order by turn have a running sum of the weight in order by the turn
